@@ -1,0 +1,39 @@
+{% include "pages/base.html" %}
+
+{% block content %}
+
+{% include 'blog/header.html' %}
+
+<main class="main-content">
+    <div class="section bg-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-xl-9">
+                    <!--                    home posts-->
+                    <div class="row gap-y">
+                        {% include 'blog/home_posts.html' %}
+                    </div>
+                    <!--                    pagination-->
+                    {% include 'blog/pagination.html' %}
+                </div>
+                <!--                side bar-->
+                <div class="col-md-4 col-xl-3">
+                    <div class="sidebar px-3 py-md-0">
+                        {% include 'blog/search.html' %}
+                    </div>
+                    <!--                    categories-->
+                    <hr>
+                    {% include 'blog/categories.html' %}
+                    <!--                    top blog-->
+                    <hr>
+                    {% include 'blog/top_posts.html' %}
+                    <!--                    about-->
+                    <hr>
+                    {% include 'blog/about.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock content %}

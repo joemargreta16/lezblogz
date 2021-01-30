@@ -1,0 +1,21 @@
+{% for post in posts %}
+<div class="col-md-6">
+    <div class="card border hover-shadow-6 mb-6 d-block">
+        {% if post.thumbnail %}
+        <a href="#"><img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap"></a>
+        {% else %}
+        <a href="#"><img class="card-img-top" src="{{ post.image_url }}" alt="Card image cap"></a>
+        {% endif %}
+
+        <div class="card-body p-6 text-center">
+            <div class="Tags gap-xy-2 text-center mt-6">
+                {% for category in post.categories.all %}
+                <a href="#" class="badge badge-secondary text-uppercase">{{ category }}</a>
+                {% endfor %}
+            </div>
+            <h5 class="card-title mb=0"><a class="text-dark" href="{{ post.post_link }}">{{ post.title }}</a></h5>
+        </div>
+    </div>
+    <br>
+</div>
+{% endfor %}

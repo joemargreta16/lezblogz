@@ -1,0 +1,13 @@
+<h6 class="sidebar-title">
+    Top Posts
+</h6>
+{% for popular in popular_posts %}
+<a class="media text-default align-items-center mb-5" href="{{ popular.post_link }}">
+    {% if popular.thumbnail %}
+    <img src="{{ popular.thumbnail.url }}" alt="popular-post-image" style="height: 50px; width: 50px;" class="rounded w-30px mr-4">
+    {% else %}
+    <img src="{{ popular.image_url }}" alt="popular-post-image" style="height: 50px; width: 50px;" class="rounded w-30px mr-4">
+    {% endif %}
+    <p class="media-body small-2 lh-4 mb-0">{{ popular.title }}</p>
+</a>
+{% endfor %}

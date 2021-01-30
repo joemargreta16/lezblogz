@@ -1,0 +1,95 @@
+{% extends 'pages/base.html' %}
+
+{% load hitcount_tags %}
+
+{% block content %}
+<main class="main-content">
+    <div class="section">
+        <div class="container">
+
+            <!--            blog content-->
+            <div class="text-center mt-8">
+                <h2>{{ post.title }}</h2>
+
+                <p>
+                    {{ post.created_at | date }} | {{ post.categories.all.0 }} | {% get_hit_count for post %}&nbsp;&nbsp;<i class="fas fa-eye" aria-hidden="true"></i>
+                </p>
+            </div>
+
+            {% if post.thumbnail %}
+            <div class="text-center mt-8">
+                <img src="{{ post.thumbnail.url }}" alt="featured-image" class="rounded-md">
+            </div>
+            {% else %}
+            <div class="text-center mt-8">
+                <img src="{{ post.image_url }}" alt="featured-image" class="rounded-md">
+            </div>
+            {% endif %}
+
+            <div class="post-content row mt-3">
+                <div class="col-lg-8 mx-auto">
+                    <div>
+                        {{ post.overview|safe }}
+                    </div>
+                    <div class="2-100px">
+                        {{ post.content|safe }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="Tags gap-xy-2 text-center mt-6">
+                {% for category in post.categories.all %}
+                <a href="#" class="badge badge-secondary">{{ category }}</a>
+                {% endfor %}
+            </div>
+            <br>
+            <!--            end blog content-->
+            <!--            similar posts-->
+
+            <!--            end similar posts-->
+            <!--            comments-->
+            <div class="section">
+                <div class="container">
+                    {% if post_comments == 0 %}
+                    <h2>Comments(0)</h2>
+                    {% else %}
+                    <h2>Comments({{ post_comments_count }})</h2>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto">
+                            <!--                            display comment-->
+                            <div class="media-list">
+                                {% for comment in post_comments %}
+                                <div>
+                                    <img class="avatar" style="vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png">
+
+                                    <div class="media-body">
+                                        <div class="small-1">
+                                            <b>{{ comment.user }}</b>
+                                            <time class="ml-4 opacity-70 small-3">{{ comment.created_at.date }}</time>
+                                        </div>
+                                        <p>{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <!--                            end display comment-->
+                            <!--                            display comment form-->
+                            <form method="POST" action="{% url 'post' slug=post.slug %}">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    {{ form }}
+                                </div>
+                                <button class="btn btn-primary btn-block mt-2" type="submit">Comment</button>
+                            </form>
+                            <!--                           end display comment form-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--            end comments-->
+        </div>
+    </div>
+</main>
+{% endblock content %}

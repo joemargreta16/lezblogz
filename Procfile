@@ -1,0 +1,1 @@
+web: gunicorn lezblogz.wsgi --log-file -
