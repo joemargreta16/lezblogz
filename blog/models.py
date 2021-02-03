@@ -11,14 +11,6 @@ User = get_user_model()
 
 
 # Create your models here.
-class Author( models.Model ):
-    user = models.OneToOneField( User, on_delete=models.CASCADE )
-    profile_image = models.ImageField( upload_to='' )
-
-    def __str__(self):
-        return self.user.username
-
-
 class Category( models.Model ):
     title = models.CharField( max_length=25 )
 
@@ -35,14 +27,16 @@ class Post( models.Model ):
     slug = AutoSlugField( populate_from='title' )
     thumbnail = models.ImageField( upload_to='', blank=True, null=True )
     image_url = models.CharField( max_length=500, default=None, blank=True, null=True )
-    overview = RichTextField()
     created_at = models.DateTimeField( auto_now_add=True )
+    updated_at = models.DateTimeField( auto_now_add=True )
     content = RichTextField()
-    author = models.ForeignKey( Author, on_delete=models.CASCADE )
+    author = models.ForeignKey( User, on_delete=models.CASCADE )
     categories = models.ManyToManyField( Category )
-    is_publish = models.BooleanField()
     hit_count_generic = GenericRelation( HitCount, object_id_field='object_pk',
                                          related_query_name='hit_count_generic_relation' )
+
+    class Meta:
+        ordering = ['created_at']
 
     @property
     def post_link(self):
@@ -50,8 +44,12 @@ class Post( models.Model ):
             'slug': self.slug,
         } )
 
+    @staticmethod
+    def get_absolute_url():
+        return reverse( 'home' )
+
     def __str__(self):
-        return self.title + ' | ' + self.slug
+        return self.title + ' | ' + self.slug + ' | ' + str( self.author )
 
 
 class Comment( models.Model ):

@@ -1,0 +1,45 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        {% url 'home' as home %}
+        <a class="navbar-brand" href="{{ home }}">LezBlogz</a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                {% url 'post_blog_page' as post_blog_page %}
+                <a class="nav-link" href="{{ post_blog_page }}">Compose a blog<span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+
+        {% if user.is_authenticated %}
+        <div class="btn-group">
+            <button class="btn btn-secondary btn-sm" type="button">
+                <span>Welcome to lezblogz,&nbsp;<strong>{{ request.user }}</strong></span>
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only"></span>
+            </button>
+            <div class="dropdown-menu">
+                {% url 'my_profile' as my_profile %}
+                <a class="dropdown-item" href="{{ my_profile }}">My Profile</a>
+                <a class="dropdown-item" href="#">Categories</a>
+                <div class="dropdown-divider"></div>
+                <a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a>
+            </div>
+        </div>
+        {% else %}
+        <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link btn btn-lg " href="{% url 'account_login' %}">Sign In</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn btn-lg btn-outline-success" href="{% url 'account_signup' %}">Sign Up</a>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+</nav>

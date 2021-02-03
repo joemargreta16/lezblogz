@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
-{% include "pages/head.html" %}
+{% include 'pages/head.html' %}
 <body>
-
 {% block content %}
+{% include 'pages/navbar.html' %}
 
 {% endblock content %}
 
-{% include "pages/scripts.html" %}
+{% include 'pages/scripts.html' %}
+<!--Custom js-->
+<!--<script type="text/javascript" src="{% static 'main.js' %}"></script>-->
 </body>
 </html>

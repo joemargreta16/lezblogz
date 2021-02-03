@@ -1,9 +1,16 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect, reverse
-from django.views.generic.detail import DetailView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from blog.models import Post, Comment, Category
-from blog.forms import CommentForm
+from blog.forms import CommentForm, PostBlogForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+
+from pages.forms import Profile
 
 from hitcount.views import HitCountDetailView
 
@@ -18,7 +25,7 @@ def search(request):
         queryset = posts.filter( Q( title__icontains=query ) )
 
         page = request.GET.get( 'page' )
-        paginator = Paginator( queryset, 2 )
+        paginator = Paginator( queryset, 9)
         try:
             posts = paginator.page( page )
         except PageNotAnInteger:
@@ -59,6 +66,16 @@ def blog(request):
     return render( request, 'blog/blog.html', context )
 
 
+class PostBlogView( LoginRequiredMixin, CreateView ):
+    model = Post
+    form_class = PostBlogForm
+    template_name = 'blog/compose_blog.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid( form )
+
+
 class PostDetailView( HitCountDetailView ):
     model = Post
     template_name = 'blog/post.html'
@@ -80,6 +97,7 @@ class PostDetailView( HitCountDetailView ):
             } ) )
 
     def get_context_data(self, **kwargs):
+        profile = Profile.objects.all()
         post_comments = Comment.objects.all().filter( post=self.object.id )
         post_comments_count = Comment.objects.all().filter( post=self.object.id ).count()
         context = super().get_context_data( **kwargs )
@@ -87,5 +105,7 @@ class PostDetailView( HitCountDetailView ):
             'form': self.form,
             'post_comments': post_comments,
             'post_comments_count': post_comments_count,
+
+            'profile': profile,
         } )
         return context
