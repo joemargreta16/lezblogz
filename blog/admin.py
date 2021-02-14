@@ -6,8 +6,8 @@ from blog.models import Category, Post, Comment
 
 # Register your models here.
 class PostBlogAdmin( admin.ModelAdmin ):
-    list_display = ('title', 'slug', 'author', 'created_at', 'updated_at')
-    readonly_fields = ('created_at', 'updated_at',)
+    list_display = ('id', 'title', 'slug', 'author', 'created_at', 'updated_at')
+    readonly_fields = ('id', 'created_at', 'updated_at',)
     search_fields = ['title', 'content']
 
 

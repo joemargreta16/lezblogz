@@ -2,9 +2,9 @@
 <div class="col-md-6">
     <div class="card border hover-shadow-6 mb-6 d-block">
         {% if post.thumbnail %}
-        <a href="#"><img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap"></a>
+        <a href="#"><img class="card-img-top" src="{{ post.thumbnail.url }}"></a>
         {% else %}
-        <a href="#"><img class="card-img-top" src="{{ post.image_url }}" alt="Card image cap"></a>
+        <a href="#"><img class="card-img-top" src="{{ post.image_url }}"></a>
         {% endif %}
 
         <div class="card-body p-6 text-center">

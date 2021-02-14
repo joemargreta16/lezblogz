@@ -1,0 +1,35 @@
+{% extends 'pages/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Update {% endblock title%}
+
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+
+    <h1>Update a Blog Post...</h1>
+    <br><br>
+    <div class="form-group">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-dark btn-lg btn-block">Update Blog</button>
+        </form>
+    </div>
+
+    {% else %}
+    <h1 align="center">You're not the author of this blog post...</h1>
+    {% endif %}
+
+    {% else %}
+
+    <h1 align="center">Please <a href="{% url 'account_signup' %}" class="badge badge-info">Register</a> or <a
+            href="{% url 'account_login' %}" class="badge badge-info">Sign In</a> First...</h1>
+
+    {% endif %}
+</div>
+
+{% endblock %}
+

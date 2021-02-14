@@ -16,6 +16,8 @@ def home(request):
     categories = Category.objects.all()
     popular_posts = Post.objects.order_by( 'hit_count_generic' )[:4]
 
+    popular_posts_head = Post.objects.order_by( 'hit_count_generic' )[:1]
+
     page = request.GET.get( 'page' )
     paginator = Paginator( posts, 9 )
     try:
@@ -29,13 +31,17 @@ def home(request):
         'posts': posts,
         'categories': categories,
         'popular_posts': popular_posts,
+        'popular_posts_head': popular_posts_head,
     }
     return render( request, 'blog/blog.html', context )
+
 
 @login_required
 def my_profile(request):
     profile = Profile.objects.get( user=request.user )
     form = ProfilePageForm( request.POST or None, request.FILES or None, instance=profile )
+    posts = Post.objects.filter(author=request.user).order_by('-created_at')
+
     confirm = False
 
     if request.method == 'POST':
@@ -46,6 +52,8 @@ def my_profile(request):
     context = {
         'profile': profile,
         'form': form,
-        'confirm': confirm
+        'confirm': confirm,
+        'posts': posts,
     }
+
     return render( request, 'pages/my_profile.html', context )

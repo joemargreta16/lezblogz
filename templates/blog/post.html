@@ -5,102 +5,168 @@
 {% include 'pages/navbar.html' %}
 
 <main class="main-content">
-    <div class="section">
+    <div class="section bg-gray">
         <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-xl-9">
+                    <div class="card bg-light text-dark" style="margin-top:30px;">
+                        <div class="card-body">
+                            <!--            blog content-->
+                            <div class="text ml-0 mt-12">
+                                <br>
+                                <h2>{{ post.title }}</h2>
 
-            <!--            blog content-->
-            <div class="text-center mt-8">
-                <h2>{{ post.title }}</h2>
+                                <p>Author:&nbsp;{{ post.author }}</p>
+                                <p>
+                                    {{ post.created_at | date }} | {{ post.categories.all.0 }} | {% get_hit_count for post %}&nbsp;&nbsp;<i class="fas fa-eye" aria-hidden="true"></i>
+                                </p>
+                                <p>Published on:&nbsp;{{ post.created_at|date }} | {{ post.created_at|timesince }}&nbsp;ago</p>
 
-                <p>
-                    {{ post.created_at | date }} | {{ post.categories.all.0 }} | {% get_hit_count for post %}&nbsp;&nbsp;<i class="fas fa-eye" aria-hidden="true"></i>
-                </p>
-            </div>
+                                {% if user.is_authenticated %}
+                                {% if user.id == post.author.id %}
+                                <a href="{% url 'update_blog_page' post.pk %}"><button type="button" class="btn btn-warning">Edit this blog post</button></a>
 
-            {% if post.thumbnail %}
-            <div class="text-center mt-8">
-                <img src="{{ post.thumbnail.url }}" alt="featured-image" class="rounded-md">
-            </div>
-            {% else %}
-            <div class="text-center mt-8">
-                <img src="{{ post.image_url }}" alt="featured-image" class="rounded-md">
-            </div>
-            {% endif %}
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                                    Delete this blog post
+                                </button>
+                                {% endif %}
+                                {% endif %}
 
-            <div class="post-content row mt-3">
-                <div class="col-lg-8 mx-auto">
-                    <div>
-                        {{ post.overview|safe }}
-                    </div>
-                    <div class="2-100px">
-                        {{ post.content|safe }}
-                    </div>
-                </div>
-            </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Delete this blog post?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="{% url 'delete_blog_page' pk=post.pk %}" method="POST" enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    <p>
+                                                        Are you sure you want to delete this title:&nbsp;<strong>"{{ post.title }}"</strong>?
+                                                    </p>
 
-            <div class="Tags gap-xy-2 text-center mt-6">
-                {% for category in post.categories.all %}
-                <a href="#" class="badge badge-secondary">{{ category }}</a>
-                {% endfor %}
-            </div>
-            <br>
-            <div class="section">
-                <div class="container">
-                    {% if post_comments == 0 %}
-                    <h2>Comments(0)</h2>
-                    {% else %}
-                    <h2>Comments({{ post_comments_count }})</h2>
-                    {% endif %}
-                    <div class="row">
-                        <div class="col-lg-8 mx-auto">
-                            <!--                            display comment-->
-                            <div class="media-list">
-                                {% for comment in post_comments %}
-                                <div>
-
-                                    <img class="avatar" style="vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;" src="{{ user.id.avatar.url }}">
-
-                                    <div class="media-body">
-                                        <div class="small-1">
-                                            <b>{{ comment.user }}</b>
-                                            <time class="ml-4 opacity-70 small-3">{{ comment.created_at.date }}</time>
-                                        </div>
-                                        <p>{{ comment.content }}</p>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <!--                            end display comment-->
-                            <!--                            display comment form-->
-                            {% if user.is_authenticated %}
-                            <form method="POST" action="{% url 'post' slug=post.slug %}">
-                                {% csrf_token %}
-
-                                <div class="form-group">
-                                    {{ form }}
-                                </div>
-                                <button class="btn btn-primary btn-block mt-2" type="submit">Comment</button>
-                            </form>
-                            <!--                           end display comment form-->
-                            {% else %}
-                            <header class="header text-center text-white mx-auto">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
-                                            <div class="col-md-8 mx-auto">
-                                                <h1 class="display-6 font-italic">Leave a comment...</h1>
-                                                <p class="lead-2 opacity-90 mt-6">You may <a href="#" class="text-decoration-none font-weight-bold">Signup</a> or <a href="#" class="text-decoration-none font-weight-bold">Sign</a> to post a comment.</p>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </header>
-                            {% endif %}
+                                <br><br>
+
+                                {% if post.thumbnail %}
+                                <div class="text-center mt-8">
+                                    <img src="{{ post.thumbnail.url }}" style="max-width: 100%;" class="rounded-md">
+                                </div>
+                                {% else %}
+                                <div class="text-center mt-8">
+                                    <img src="{{ post.image_url }}" style="max-width: 100%;" class="rounded-md">
+                                </div>
+                                {% endif %}
+
+                                <div class="post-content row mt-3">
+                                    <div class="col-lg-8 mx-auto">
+                                        <div class="2-80px">
+                                            {{ post.content|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="Tags gap-xy-2 text-center mt-6">
+                                    {% for category in post.categories.all %}
+                                    <a href="#" class="badge badge-warning">{{ category }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="section">
+                                <div class="container">
+                                    {% if post_comments == 0 %}
+                                    <h2>Comments(0)</h2>
+                                    {% else %}
+                                    <h2>Comments({{ post_comments_count }})</h2>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-lg-8 mx-auto">
+                                            <!--                            display comment-->
+                                            <div class="media-list">
+                                                {% for comment in post_comments %}
+                                                <div>
+
+
+
+                                                    <div class="media-body">
+                                                        <div class="small-1">
+                                                            <img class="avatar" style="vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;" src="{{ request.user.username.avatar.url }}">
+                                                            <b>{{ comment.user }}</b>
+                                                            <time class="ml-4 opacity-70 small-3">{{ comment.created_at.date }}</time>
+                                                        </div>
+                                                        <p>{{ comment.content }}</p>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            <!--                            end display comment-->
+                                            <!--                            display comment form-->
+                                            {% if user.is_authenticated %}
+                                            <form method="POST" action="{% url 'post' slug=post.slug %}">
+                                                {% csrf_token %}
+
+                                                <div class="form-group">
+                                                    {{ form }}
+                                                </div>
+                                                <button class="btn btn-primary btn-block mt-2" type="submit">Comment</button>
+                                            </form>
+                                            <!--                           end display comment form-->
+                                            {% else %}
+                                            <header class="header text-center text-white mx-auto">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark" style="min-width: 100%;">
+                                                            <div class="col-md-8 mx-auto">
+                                                                <h1 class="display-6 font-italic">Leave a comment...</h1>
+                                                                <p class="lead-2 opacity-90 mt-6">You may <a href="{% url 'account_signup' %}" class="text-decoration-none font-weight-bold">Signup</a> or <a href="{% url 'account_login' %}" class="text-decoration-none font-weight-bold">Sign</a> to post a comment.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </header>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--            end comments-->
                         </div>
                     </div>
                 </div>
+
+                <!--                side bar-->
+                <div class="col-md-4 col-xl-3">
+                    <div class="sidebar px-3 py-md-0">
+                        <br><br>
+                        {% include 'blog/search.html' %}
+                    </div>
+                    <!--                    categories-->
+                    <hr>
+                    {% include 'blog/categories.html' %}
+                    <!--                    top blog-->
+                    <hr>
+                    {% include 'blog/top_posts.html' %}
+                    <!--                    about-->
+                    <hr>
+                    {% include 'blog/about.html' %}
+                </div>
+                <!--                end of side bar-->
             </div>
-            <!--            end comments-->
         </div>
     </div>
 </main>

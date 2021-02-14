@@ -2,8 +2,9 @@
     Search
 </h6>
 <form class="input-group" action="{% url 'search' %}" method="GET" role="form">
-    <input type="text" name="search" id="search" class="form-control" placeholder="Search">
-    <div class="input-group-addon">
-        <span class="input-group-text"><i class="fas fa-search"></i></span>
+    <div class="input-group rounded">
+        <input type="text" name="search" id="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+        <span class="input-group-text btn btn-primary"><i class="fas fa-search"></i></span>
     </div>
 </form>
+

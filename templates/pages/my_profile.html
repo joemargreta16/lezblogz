@@ -7,7 +7,7 @@
 {% include 'pages/navbar.html' %}
 <br>
 <!--modal-->
-<div class="modal" tabindex="-1" role="dialog" id="myModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" tabindex="-1" role="dialog" id="myModal" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -41,25 +41,76 @@
 </div>
 {% endif %}
 
-<div class="card mx-auto mt-6" style="width: 30rem;">
-    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-        <img src="{{ profile.avatar.url }}" class="card-img-top"/>
-        <a href="#!">
-            <div class="mask" style="background-color: rgba(251, 251, 251, 0.15)"></div>
-        </a>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">My Profile</h5>
-        <div class="card-text">
-            <p>Name:&nbsp; {{ profile.first_name }}&nbsp; {{ profile.last_name }}</p>
-            <p>Username:&nbsp; {{ profile.user }}</p>
-            <p>Email:&nbsp; {{ profile.email }}</p>
-            <p>About me:&nbsp; {{ profile.bio }}</p>
+<main class="main-content">
+    <div class="section bg-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-xl-8">
+                    <div class="row gap-y">
+                        <!--                for all the blog post of the current user-->
+
+
+                        {% if posts %}
+                        {% for post in posts %}
+                        <div class="col-md-6">
+                            <div class="card border hover-shadow-6 mb-6 d-block">
+                                {% if post.thumbnail %}
+                                <a href="#"><img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap"></a>
+                                {% else %}
+                                <a href="#"><img class="card-img-top" src="{{ post.image_url }}" alt="Card image cap"></a>
+                                {% endif %}
+
+                                <div class="card-body p-6 text-center">
+                                    <div class="Tags gap-xy-2 text-center mt-6">
+                                        {% for category in post.categories.all %}
+                                        <a href="#" class="badge badge-secondary text-uppercase">{{ category }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    <h5 class="card-title mb=0"><a class="text-dark" href="{{ post.post_link }}">{{ post.title }}</a></h5>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        {% endfor %}
+
+                        {% else %}
+                        <h1 align="center">No post for this user yet...</h1>
+                        {% endif %}
+
+
+                        <!--                end for all the blog post of the current user-->
+                    </div>
+                </div>
+                <!--                user's profile-->
+                <div class="col-md-4 col-xl-4">
+                    <div class="sidebar px-3 py-md-0">
+                        <div class="card">
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <img src="{{ profile.avatar.url }}" class="card-img-top"/>
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15)"></div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">My Profile</h5>
+                                <div class="card-text">
+                                    <p><strong>Name:</strong>&nbsp; {{ profile.first_name }}&nbsp; {{ profile.last_name }}</p>
+                                    <p><strong>Username:</strong>&nbsp; {{ profile.user }}</p>
+                                    <p><strong>Email:</strong>&nbsp; {{ profile.email }}</p>
+                                    <p><strong>About me:</strong></p>
+                                    <p>{{ profile.bio }}</p>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                                    Edit Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--                end user's profile-->
+            </div>
         </div>
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-            Edit Profile
-        </button>
     </div>
-</div>
+</main>
 
 {% endblock content %}

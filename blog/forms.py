@@ -31,6 +31,22 @@ class PostBlogForm( forms.ModelForm ):
         widgets = {
             'author': forms.TextInput(
                 attrs={'class': 'form-control', 'value': '', 'id': 'author_id', 'type': 'hidden'} ),
-            # 'author': forms.TextInput(
-            #     attrs={'class': 'form-control', 'value': '', 'id': 'author_id'} ),
+        }
+
+
+class UpdateBlogForm( forms.ModelForm ):
+    class Meta:
+        model = Post
+        fields = (
+            'title',
+            'author',
+            'thumbnail',
+            'image_url',
+            'content',
+            'categories',
+        )
+
+        widgets = {
+            'author': forms.TextInput(
+                attrs={'class': 'form-control', 'value': '', 'id': 'author_id', 'type': 'hidden'} ),
         }

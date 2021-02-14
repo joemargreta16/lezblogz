@@ -25,18 +25,18 @@ class Category( models.Model ):
 class Post( models.Model ):
     title = models.CharField( max_length=250 )
     slug = AutoSlugField( populate_from='title' )
-    thumbnail = models.ImageField( upload_to='', blank=True, null=True )
-    image_url = models.CharField( max_length=500, default=None, blank=True, null=True )
+    thumbnail = models.ImageField( default='default_blog_post_img.png', upload_to='', blank=True, null=True )
+    image_url = models.CharField( default=None, max_length=500, blank=True, null=True )
     created_at = models.DateTimeField( auto_now_add=True )
     updated_at = models.DateTimeField( auto_now_add=True )
     content = RichTextField()
-    author = models.ForeignKey( User, on_delete=models.CASCADE )
+    author = models.ForeignKey( User, on_delete=models.CASCADE, related_name='posts' )
     categories = models.ManyToManyField( Category )
     hit_count_generic = GenericRelation( HitCount, object_id_field='object_pk',
                                          related_query_name='hit_count_generic_relation' )
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['-created_at']
 
     @property
     def post_link(self):
