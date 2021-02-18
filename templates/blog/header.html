@@ -1,12 +1,12 @@
-<header class="header text-center text-white mt-12">
+<header class="header text-white mt-12">
     <div class="container">
         <div class="row">
-            <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark" style="min-width: 100%;">
+            <div class="jumbotron jumbotron-fluid p-3 p-md-5 text-white rounded bg-dark" style="min-width: 100%;">
                 {% for popular in popular_posts_head %}
                 <div class="col-md-8 mx-auto">
                     <h1 class="display-6 font-italic">{{ popular.title }}</h1>
                     <p class="lead-2 opacity-90 mt-6">{{ popular.content|slice:":100"|safe }}...</p>
-                    <p class="lead mb-0"><a href="{{ popular.post_link }}" class="text-white font-weight-bold">Continue reading...</a></p>
+                    <p class="lead mb-0 text-center"><a href="{{ popular.post_link }}" class="text-white font-weight-bold">Continue reading...</a></p>
                 </div>
                 {% endfor %}
             </div>

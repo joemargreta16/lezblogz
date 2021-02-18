@@ -4,6 +4,8 @@
 {% block title %} Update {% endblock title%}
 
 {% block content %}
+{% include 'pages/navbar.html' %}
+
 <div class="container">
     {% if user.is_authenticated %}
     {% if user.id == post.author.id %}

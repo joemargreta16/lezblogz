@@ -6,6 +6,7 @@ from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
 from hitcount.models import HitCount
 from django.contrib.contenttypes.fields import GenericRelation
+from pages.models import Profile
 
 User = get_user_model()
 
@@ -25,7 +26,7 @@ class Category( models.Model ):
 class Post( models.Model ):
     title = models.CharField( max_length=250 )
     slug = AutoSlugField( populate_from='title' )
-    thumbnail = models.ImageField( default='default_blog_post_img.png', upload_to='', blank=True, null=True )
+    thumbnail = models.ImageField( default='default/default_blog_post_img.png', upload_to='thumbnails/', blank=True, null=True )
     image_url = models.CharField( default=None, max_length=500, blank=True, null=True )
     created_at = models.DateTimeField( auto_now_add=True )
     updated_at = models.DateTimeField( auto_now_add=True )
@@ -55,7 +56,7 @@ class Post( models.Model ):
 class Comment( models.Model ):
     user = models.ForeignKey( User, on_delete=models.CASCADE )
     created_at = models.DateTimeField( auto_now_add=True )
-    post = models.ForeignKey( 'Post', on_delete=models.CASCADE )
+    post = models.ForeignKey( Post, on_delete=models.CASCADE )
     content = models.TextField()
 
     def __str__(self):
