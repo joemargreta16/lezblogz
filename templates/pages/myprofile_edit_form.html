@@ -1,0 +1,44 @@
+{% extends 'pages/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %} | Update Profile{% endblock title %}
+
+{% block custom_css %}
+<link rel="stylesheet" type="text/css" href="{% static "custom_style.css" %}">
+{% endblock custom_css %}
+
+{% block content %}
+
+<div class="d-flex align-items-center min-vh-30">
+    <div class="container">
+        <div class="card border-primary">
+            <div class="card-body">
+                <div class="content-section">
+                    <div class="media">
+                        <img class="rounded-circle account-img"
+                            style="vertical-align: middle; width: 190px; height: 190px; border-radius: 90%; padding: 20px;"
+                            src="{{ user.profile.avatar.url }}">
+                        <div class="media-body ml-20 pl-50">
+                            <h2 class="account-heading align-item-center">{{ user.username }}</h2>
+                            <p class="text-secondary">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <legend class="border-bottom mb-4">Profile Info</legend>
+                            {{ u_form|crispy }}
+                            {{ p_form|crispy }}
+
+                            <div class="form-group">
+                                <button class="btn btn-info btn-block" type="submit">Update profile</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

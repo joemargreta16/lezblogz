@@ -1,36 +1,15 @@
 {% extends 'pages/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+{% load hitcount_tags %}
 
-{% block title %} My Profile{% endblock title %}
+{% block custom_css %}
+<link rel="stylesheet" type="text/css" href="{% static "custom_style.css" %}">
+{% endblock custom_css %}
+
+{% block title %} | My Profile{% endblock title %}
 
 {% block content %}
-{% include 'pages/navbar.html' %}
-<br>
-<!--modal-->
-<div class="modal" tabindex="-1" role="dialog" id="myModal" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Update your profile</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        {{ form|crispy }}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary btn-block">Update Profile</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 {% if confirm %}
 <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -41,76 +20,95 @@
 </div>
 {% endif %}
 
-<main class="main-content">
-    <div class="section bg-gray">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-xl-8">
-                    <div class="row gap-y">
-                        <!--                for all the blog post of the current user-->
+<div class="row py-5 px-4">
+    <div class="col-md-8 mx-auto">
+        <!-- Profile widget -->
+        <div class="bg-white shadow rounded overflow-hidden">
+            <div class="px-4 pt-0 pb-4 cover">
+                <div class="media align-items-end">
+                    <div class="profile mr-3 profile-img">
+                        <img src="{{ profile.avatar.url }}" alt="..." width="200" height="200" class="rounded mb-2 img-thumbnail">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'pages:update_profile' %}" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
+                    </div>
+                    {% endif %}
+                    <div class="media-body mb-5 text-white profile-head">
+                        <h4 class="mt-0 mb-0">{{ profile.first_name }}&nbsp;{{ profile.last_name }}</h4>
+                        <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i>{{ profile.user }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light p-4 d-flex justify-content-end text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
 
+                        <h5 class="font-weight-bold mb-0 d-block">{{ posts_count }}</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i># of Blog Posts</small>
 
-                        {% if posts %}
-                        {% for post in posts %}
-                        <div class="col-md-6">
-                            <div class="card border hover-shadow-6 mb-6 d-block">
-                                {% if post.thumbnail %}
-                                <a href="#"><img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap"></a>
-                                {% else %}
-                                <a href="#"><img class="card-img-top" src="{{ post.image_url }}" alt="Card image cap"></a>
-                                {% endif %}
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ comment_count }}</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i># Comments</small>
+                    </li>
+                </ul>
+            </div>
+            <div class="px-4 py-3">
+                <h5 class="mb-2">My Profile</h5>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    <p><strong>Email:</strong>&nbsp; {{ profile.user.email }}</p>
+                    <p><strong>About me:</strong></p>
+                    <p>{{ profile.bio }}</p>
+                </div>
+            </div>
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Blog posts</h5><a href="#" class="btn btn-link text-muted">Show all</a>
+                </div>
+                <div class="row">
+                    <div class="align-items-center col-md-8 col-xl-9">
+                        <div class="row gap-y">
+                            <!--                for all the blog post of the current user-->
+                            {% if posts %}
+                            {% for post in posts %}
+                            <div class="col-md-6">
+                                <div class="card border hover-shadow-6 mb-6 d-block">
+                                    {% if post.thumbnail %}
+                                    <a href="#"><img class="card-img-top" src="{{ post.thumbnail.url }}"
+                                                     alt="Card image cap"></a>
+                                    {% else %}
+                                    <a href="#"><img class="card-img-top" src="{{ post.image_url }}"
+                                                     alt="Card image cap"></a>
+                                    {% endif %}
 
-                                <div class="card-body p-6 text-center">
-                                    <div class="Tags gap-xy-2 text-center mt-6">
-                                        {% for category in post.categories.all %}
-                                        <a href="#" class="badge badge-secondary text-uppercase">{{ category }}</a>
-                                        {% endfor %}
+                                    <div class="card-body p-6 text-center">
+                                        <div class="Tags gap-xy-2 text-center mt-6">
+                                            {% for category in post.categories.all %}
+                                            <a href="#" class="badge badge-secondary text-uppercase">{{ category }}</a>
+                                            {% endfor %}
+                                        </div>
+                                        <h5 class="card-title mb=0"><a class="text-dark" href="{{ post.post_link }}">{{ post.title }}</a></h5>
+                                        <p>Author:&nbsp;{{ post.author }}</p>
+                                        <p>
+                                            Published on:&nbsp;{{ post.created_at|date }} | {% get_hit_count for post %}&nbsp;&nbsp;<i
+                                                class="fas fa-eye" aria-hidden="true"></i>&nbsp;views
+                                        </p>
                                     </div>
-                                    <h5 class="card-title mb=0"><a class="text-dark" href="{{ post.post_link }}">{{ post.title }}</a></h5>
                                 </div>
+                                <br>
                             </div>
-                            <br>
-                        </div>
-                        {% endfor %}
+                            {% endfor %}
 
-                        {% else %}
-                        <h1 align="center">No post for this user yet...</h1>
-                        {% endif %}
-
-
-                        <!--                end for all the blog post of the current user-->
-                    </div>
-                </div>
-                <!--                user's profile-->
-                <div class="col-md-4 col-xl-4">
-                    <div class="sidebar px-3 py-md-0">
-                        <div class="card">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="{{ profile.avatar.url }}" class="card-img-top"/>
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15)"></div>
-                                </a>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">My Profile</h5>
-                                <div class="card-text">
-                                    <p><strong>Name:</strong>&nbsp; {{ profile.first_name }}&nbsp; {{ profile.last_name }}</p>
-                                    <p><strong>Username:</strong>&nbsp; {{ profile.user }}</p>
-                                    <p><strong>Email:</strong>&nbsp; {{ profile.email }}</p>
-                                    <p><strong>About me:</strong></p>
-                                    <p>{{ profile.bio }}</p>
-                                </div>
-                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                                    Edit Profile
-                                </button>
-                            </div>
+                            {% else %}
+                            <h1 align="center">No post for this user yet...</h1>
+                            {% endif %}
+                            <!--                end for all the blog post of the current user-->
                         </div>
                     </div>
                 </div>
-                <!--                end user's profile-->
             </div>
         </div>
     </div>
-</main>
+</div>
+
+{% include 'blog/pagination.html' %}
 
 {% endblock content %}
+

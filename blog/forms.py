@@ -26,7 +26,9 @@ class PostBlogForm( forms.ModelForm ):
             'thumbnail',
             'image_url',
             'content',
-            'categories',)
+            'categories',
+            'tags',
+        )
 
         widgets = {
             'author': forms.TextInput(
@@ -44,6 +46,7 @@ class UpdateBlogForm( forms.ModelForm ):
             'image_url',
             'content',
             'categories',
+            'tags',
         )
 
         widgets = {

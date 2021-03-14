@@ -71,6 +71,7 @@ def blog(request):
         'categories': categories,
         'popular_posts': popular_posts,
         'popular_posts_head': popular_posts_head,
+        'page': page,
     }
     return render( request, 'blog/blog.html', context )
 
@@ -79,6 +80,7 @@ class PostBlogView( LoginRequiredMixin, CreateView ):
     model = Post
     form_class = PostBlogForm
     template_name = 'blog/compose_blog.html'
+    success_url = reverse_lazy( 'pages:home' )
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -89,13 +91,13 @@ class UpdateBlogView( UpdateView ):
     model = Post
     form_class = UpdateBlogForm
     template_name = 'blog/update_blog.html'
-    # success_url = reverse_lazy( 'blog:<slug>' )
+    success_url = reverse_lazy( 'pages:home' )
 
 
 class DeleteBlogView( LoginRequiredMixin, DeleteView ):
     model = Post
     template_name = 'blog/post.html'
-    success_url = reverse_lazy( 'blog' )
+    success_url = reverse_lazy( 'pages:home' )
 
     def get_object(self, *args, **kwargs):
         pk = self.kwargs.get( 'pk' )
@@ -127,6 +129,7 @@ class PostDetailView( HitCountDetailView ):
 
     def get_context_data(self, **kwargs):
         posts = Post.objects.all()
+        similar_posts = self.object.tags.similar_objects()[:3]
         categories = Category.objects.all()
         popular_posts = Post.objects.order_by( 'hit_count_generic' )[:4]
 
@@ -143,6 +146,7 @@ class PostDetailView( HitCountDetailView ):
             'profile': profile,
 
             'posts': posts,
+            'similar_posts': similar_posts,
             'categories': categories,
             'popular_posts': popular_posts,
         } )

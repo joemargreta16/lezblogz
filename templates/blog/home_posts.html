@@ -1,3 +1,5 @@
+{% load hitcount_tags %}
+
 {% for post in posts %}
 <div class="col-md-6">
     <div class="card border hover-shadow-6 mb-6 d-block">
@@ -7,13 +9,18 @@
         <a href="#"><img class="card-img-top" src="{{ post.image_url }}"></a>
         {% endif %}
 
-        <div class="card-body p-6 text-center">
-            <div class="Tags gap-xy-2 text-center mt-6">
+        <div class="card-body p-6">
+            <div class="Tags gap-xy-2 mt-6">
                 {% for category in post.categories.all %}
                 <a href="#" class="badge badge-secondary text-uppercase">{{ category }}</a>
                 {% endfor %}
             </div>
             <h5 class="card-title mb=0"><a class="text-dark" href="{{ post.post_link }}">{{ post.title }}</a></h5>
+            <p>Author:&nbsp;{{ post.author }}</p>
+            <p>
+                Published on:&nbsp;{{ post.created_at|date }} | {% get_hit_count for post %}&nbsp;&nbsp;<i
+                    class="fas fa-eye" aria-hidden="true"></i>&nbsp;views
+            </p>
         </div>
     </div>
     <br>

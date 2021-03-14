@@ -5,7 +5,7 @@
                 {% for popular in popular_posts_head %}
                 <div class="col-md-8 mx-auto">
                     <h1 class="display-6 font-italic">{{ popular.title }}</h1>
-                    <p class="lead-2 opacity-90 mt-6">{{ popular.content|slice:":100"|safe }}...</p>
+                    <p class="lead-2 opacity-90 mt-6">{{ popular.content|slice:":100"|safe }}<b>[...]</b></p>
                     <p class="lead mb-0 text-center"><a href="{{ popular.post_link }}" class="text-white font-weight-bold">Continue reading...</a></p>
                 </div>
                 {% endfor %}

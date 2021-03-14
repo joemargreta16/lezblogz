@@ -1,33 +1,42 @@
 {% extends 'pages/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
-{% block title %}Compose {% endblock %}
+{% block title %} | Compose{% endblock title %}
+
+{% block custom_css %}
+<link rel="stylesheet" type="text/css" href="{% static "custom_style.css" %}">
+{% endblock custom_css %}
 
 {% block content %}
-{% include 'pages/navbar.html' %}
-<br>
-<div class="container">
-    {% if user.is_authenticated %}
-    <h1>Lez compose a Blogz</h1>
-    <br><br>
-    <div class="form-group">
-        <form method="POST" action="" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.media }}
-            {{ form|crispy }}
-            <!--        {% if user.is_authenticated %}-->
-            <button type="submit" class="btn btn-dark btn-lg btn-block">Publish</button>
-            <!--        {% endif %}-->
-        </form>
+<div class="row py-5 px-4">
+    <div class="col-md-8 mx-auto">
+        <div class="bg-white shadow rounded overflow-hidden">
+            <div class="container">
+                {% if user.is_authenticated %}
+                <h1>Lez compose a Blogz</h1>
+                <br><br>
+                <div class="form-group">
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {{ form|crispy }}
+                        <!--        {% if user.is_authenticated %}-->
+                        <button type="submit" class="btn btn-info btn-lg btn-block">Publish</button>
+                        <!--        {% endif %}-->
+                    </form>
+                </div>
+                <script>
+                    var name = "{{ user.id }}";
+                    document.getElementById("author_id").value = name;
+                </script>
+                {% else %}
+                <h1 align="center">Please <a href="{% url 'account_signup' %}" class="badge badge-info">Register</a> or <a
+                        href="{% url 'account_login' %}" class="badge badge-info">Sign In</a> First...</h1>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <script>
-    var name = "{{ user.id }}";
-    document.getElementById("author_id").value = name;
-    </script>
-    {% else %}
-    <h1 align="center">Please <a href="{% url 'account_signup' %}" class="badge badge-info">Register</a> or <a
-            href="{% url 'account_login' %}" class="badge badge-info">Sign In</a> First...</h1>
-    {% endif %}
 </div>
 
 {% endblock %}

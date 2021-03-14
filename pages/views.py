@@ -1,16 +1,69 @@
 # Create your views here.
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+
 from blog.views import Post, Category
-from .models import Profile
-from .forms import ProfilePageForm
-from django.views.generic import DetailView
+from .models import Profile, User
+from blog.models import Comment
+from .forms import UpdateProfilePageForm, UpdateUserPageForm, ChangePasswordForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
+from django.views.generic import UpdateView
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+from django.urls import reverse_lazy
 
 
 # Create your views here.
+@login_required
+def my_profile(request):
+    profile = Profile.objects.get( user=request.user )
+    posts = Post.objects.filter( author=request.user )
+    posts_count = Post.objects.filter( author=request.user ).count()
+    comment_count = Comment.objects.filter( user=request.user ).count()
+
+    page = request.GET.get( 'page' )
+    paginator = Paginator( posts,8 )
+    try:
+        posts = paginator.page( page )
+    except PageNotAnInteger:
+        posts = paginator.page( 1 )
+    except EmptyPage:
+        posts = paginator.page( paginator.num_pages )
+
+    context = {
+        'profile': profile,
+        'posts': posts,
+        'posts_count': posts_count,
+        'comment_count': comment_count,
+
+        'page': page,
+    }
+    return render( request, 'pages/my_profile.html', context )
+
+
+@login_required
+def update_profile(request):
+    profile = Profile.objects.get( user=request.user )
+    u_form = UpdateUserPageForm( request.POST or None, instance=request.user )
+    p_form = UpdateProfilePageForm( request.POST or None, request.FILES or None, instance=profile )
+    confirm = False
+
+    if request.method == 'POST':
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            confirm = True
+            return redirect( 'pages:my_profile' )
+
+    context = {
+        'profile': profile,
+        'u_form': u_form,
+        'p_form': p_form,
+        'confirm': confirm,
+    }
+    return render( request, 'pages/myprofile_edit_form.html', context )
+
+
 def home(request):
     posts = Post.objects.all()
     categories = Category.objects.all()
@@ -36,24 +89,10 @@ def home(request):
     return render( request, 'blog/blog.html', context )
 
 
-@login_required
-def my_profile(request):
-    profile = Profile.objects.get( user=request.user )
-    form = ProfilePageForm( request.POST or None, request.FILES or None, instance=profile )
-    posts = Post.objects.filter(author=request.user).order_by('-created_at')
+class ChangePassword( PasswordChangeView ):
+    form_class = ChangePasswordForm
+    success_url = reverse_lazy( 'pages:password_success' )
 
-    confirm = False
 
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            confirm = True
-
-    context = {
-        'profile': profile,
-        'form': form,
-        'confirm': confirm,
-        'posts': posts,
-    }
-
-    return render( request, 'pages/my_profile.html', context )
+def password_success(request):
+    return render( request, 'pages/password_success.html' )

@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import mimetypes
+
+mimetypes.add_type( "text/css", ".css", True )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -27,10 +29,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['lezblogz.herokuapp.com']
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    # django-admin-interface
+    'admin_interface',
+    'colorfield',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,14 +60,19 @@ INSTALLED_APPS = [
 
     # crispy forms
     'crispy_forms',
+
+    # taggit
+    'taggit',
 ]
+# django-admin-interface
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # only if django version >= 3.0
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = '/logout/'
+LOGIN_REDIRECT_URL = 'pages:home'
+LOGOUT_REDIRECT_URL = 'pages:home'
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -80,7 +90,7 @@ ROOT_URLCONF = 'lezblogz.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join( BASE_DIR, 'templates' )],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,17 +115,15 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = 'lezblogz.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join( BASE_DIR, 'db.sqlite3' ),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -135,7 +143,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -149,16 +156,15 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join( BASE_DIR, 'static' )
+STATICFILES_DIRS = (STATIC_ROOT,)
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join( BASE_DIR, 'media' )
 #
 #   ckeditor path
 CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/'
@@ -173,28 +179,29 @@ CKEDITOR_CONFIGS = {
     },
 }
 
+# django-allauth
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_UNIQUE = True
-
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 2
 # ACCOUNT_EMAIL_VERIFICATION = True
 
 
 # comment lang muna kapag i deploy
-# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-# EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_mails")
-
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join( BASE_DIR, "sent_mails" )
 
 # comment lang muna kapag i localhost
 # smtp
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIl_PORT = 587
-EMAIL_HOST_USER = 'joemar.greta16@gmail.com'
-EMAIL_HOST_PASSWORD = 'mhvkaoomuyaoltcp'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'lezblogz <joemar.greta16@gmail.com>'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIl_PORT = 587
+# EMAIL_HOST_USER = 'joemar.greta16@gmail.com'
+# EMAIL_HOST_PASSWORD = 'mhvkaoomuyaoltcp'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = 'lezblogz <joemar.greta16@gmail.com>'
 #
 #   for deployment
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -202,7 +209,7 @@ import dj_database_url
 import django_heroku
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+django_heroku.settings( locals() )
 
-prod_db = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(prod_db)
+prod_db = dj_database_url.config( conn_max_age=500 )
+DATABASES['default'].update( prod_db )
