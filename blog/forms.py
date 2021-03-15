@@ -1,6 +1,3 @@
-import profile
-from urllib import request
-
 from django import forms
 from blog.models import Comment, Post
 

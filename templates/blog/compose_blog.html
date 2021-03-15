@@ -19,7 +19,7 @@
                 <div class="form-group">
                     <form method="POST" action="" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ form.media }}
+                        {{ form.media|safe }}
                         {{ form|crispy }}
                         <!--        {% if user.is_authenticated %}-->
                         <button type="submit" class="btn btn-info btn-lg btn-block">Publish</button>
