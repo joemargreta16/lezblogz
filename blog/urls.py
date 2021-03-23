@@ -8,5 +8,8 @@ urlpatterns = [
     path( 'post_blog_page/update/<int:pk>', UpdateBlogView.as_view(), name='update_blog_page' ),
     path( 'post_blog_page/delete/<int:pk>', DeleteBlogView.as_view(), name='delete_blog_page' ),
     path( '<slug>/', PostDetailView.as_view(), name='post' ),
+
+    # path('postComment', postComment, name="postComment"),
+    # path('<str:slug>', blogPost, name="blogPost"),
     path( 'q', search, name='search' ),
 ]

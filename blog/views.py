@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from django.contrib import messages
-from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView
 from blog.models import Post, Comment, Category
@@ -40,8 +41,8 @@ def search(request):
         total = queryset.count()
         context.update( {
             'posts': posts,
-            'categories':categories,
-            'popular_posts':popular_posts,
+            'categories': categories,
+            'popular_posts': popular_posts,
             'query': query,
             'page': page,
             'total': total,
@@ -105,6 +106,41 @@ class DeleteBlogView( LoginRequiredMixin, DeleteView ):
         if not obj.author.username == self.request.user:
             messages.warning( self.request, "You're not the author of this blog post..." )
         return obj
+
+
+# def blogPost(request, slug):
+#     post = Post.objects.filter( slug=slug ).first()
+#     comments = Comment.objects.filter( post=post, reply=None )
+#     replies = Comment.objects.filter( post=post ).exclude( reply=None )
+#     replyDict = {}
+#     for rep in replies:
+#         if rep.reply.sno not in replyDict.keys():
+#             replyDict[rep.reply.id] = [rep]
+#         else:
+#             replyDict[rep.reply.id].append( rep )
+#
+#     context = {'post': post, 'comments': comments, 'user': request.user, 'replyDict': replyDict}
+#     return render( request, 'blog/post.html', context )
+#
+#
+# def postComment(request):
+#     if request.method == "POST":
+#         comment = request.POST.get( 'comment' )
+#         user = request.user
+#         post_id = request.POST.get( 'post_id' )
+#         post = Post.objects.get( id=post_id )
+#         rep_id = request.POST.get( 'rep_id' )
+#         if rep_id == "":
+#             comment = Comment( comment=comment, user=user, post=post )
+#             comment.save()
+#             messages.success( request, "Your comment has been posted successfully" )
+#         else:
+#             reply = Comment.objects.get( id=rep_id )
+#             comment = Comment( comment=comment, user=user, post=post, reply=reply )
+#             comment.save()
+#             messages.success( request, "Your reply has been posted successfully" )
+#
+#     return redirect( f"{post.slug}" )
 
 
 class PostDetailView( HitCountDetailView ):

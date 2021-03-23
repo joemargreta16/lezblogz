@@ -1,14 +1,11 @@
 # Create your views here.
-from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
-
+from django.shortcuts import render, redirect
 from blog.views import Post, Category
-from .models import Profile, User
+from .models import Profile
 from blog.models import Comment
 from .forms import UpdateProfilePageForm, UpdateUserPageForm, ChangePasswordForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeView
-from django.views.generic import UpdateView
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse_lazy
 
@@ -53,7 +50,7 @@ def update_profile(request):
             u_form.save()
             p_form.save()
             confirm = True
-            return redirect( 'pages:my_profile' )
+            return redirect( 'pages:my_profile', {'confirm': confirm,} )
 
     context = {
         'profile': profile,
