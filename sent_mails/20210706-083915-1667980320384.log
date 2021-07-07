@@ -1,0 +1,17 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [example.com] Please Confirm Your E-mail Address
+From: webmaster@localhost
+To: malyn@gmail.com
+Date: Tue, 06 Jul 2021 00:39:15 -0000
+Message-ID: <162553195567.16204.9615881074279257084@LAPTOP-EF2IA3RD>
+
+Hello from lezblogz!
+
+You're receiving this e-mail because user malyn has given your e-mail address to register an account on example.com.
+
+To confirm this is correct, go to http://127.0.0.1:8000/accounts/confirm-email/Mg:1m0Z7L:HPf1EP8eKqVN8sDFThlYSQbXqCil2XsPFy07ZeX6fUg/
+
+Thank you for using lezblogz!
+-------------------------------------------------------------------------------

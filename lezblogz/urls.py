@@ -4,9 +4,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-admin.site.site_header = "LezBlog Admin"
-admin.site.site_title = "LezBlog"
-admin.site.index_title = "Welcome to LezBlog Admin Panel"
+admin.site.site_header = "The Blog Admin"
+admin.site.site_title = "The Blog"
+admin.site.index_title = 'Welcome to "The Blog" Admin Panel'
 
 urlpatterns = [
                   path( 'admin/', admin.site.urls ),

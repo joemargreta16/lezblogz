@@ -17,7 +17,7 @@
                 {% endfor %}
             </div>
             <h5 class="card-title mb=0"><a class="text-dark" href="{{ post.post_link }}">{{ post.title }}</a></h5>
-            <p>Author:&nbsp;{{ post.author }}</p>
+            <p><img src="{{ post.author.profile.avatar.url }}" alt="" style="max-width:50px;max-height:50px;" class="avatar rounded-pill img-fluid mr-3">Author:&nbsp;{{ post.author }}</p>
             <p>
                 Published on:&nbsp;{{ post.created_at|date }} | {% get_hit_count for post %}&nbsp;&nbsp;<i
                     class="fas fa-eye" aria-hidden="true"></i>&nbsp;views

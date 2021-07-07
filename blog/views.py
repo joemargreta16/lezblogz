@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, UpdateView, DeleteView
 from blog.models import Post, Comment, Category
 from blog.forms import CommentForm, PostBlogForm, UpdateBlogForm
@@ -108,41 +109,6 @@ class DeleteBlogView( LoginRequiredMixin, DeleteView ):
         return obj
 
 
-# def blogPost(request, slug):
-#     post = Post.objects.filter( slug=slug ).first()
-#     comments = Comment.objects.filter( post=post, reply=None )
-#     replies = Comment.objects.filter( post=post ).exclude( reply=None )
-#     replyDict = {}
-#     for rep in replies:
-#         if rep.reply.sno not in replyDict.keys():
-#             replyDict[rep.reply.id] = [rep]
-#         else:
-#             replyDict[rep.reply.id].append( rep )
-#
-#     context = {'post': post, 'comments': comments, 'user': request.user, 'replyDict': replyDict}
-#     return render( request, 'blog/post.html', context )
-#
-#
-# def postComment(request):
-#     if request.method == "POST":
-#         comment = request.POST.get( 'comment' )
-#         user = request.user
-#         post_id = request.POST.get( 'post_id' )
-#         post = Post.objects.get( id=post_id )
-#         rep_id = request.POST.get( 'rep_id' )
-#         if rep_id == "":
-#             comment = Comment( comment=comment, user=user, post=post )
-#             comment.save()
-#             messages.success( request, "Your comment has been posted successfully" )
-#         else:
-#             reply = Comment.objects.get( id=rep_id )
-#             comment = Comment( comment=comment, user=user, post=post, reply=reply )
-#             comment.save()
-#             messages.success( request, "Your reply has been posted successfully" )
-#
-#     return redirect( f"{post.slug}" )
-
-
 class PostDetailView( HitCountDetailView ):
     model = Post
     template_name = 'blog/post.html'
@@ -159,9 +125,7 @@ class PostDetailView( HitCountDetailView ):
             form.instance.post = post
             form.save()
 
-            return redirect( reverse( 'post', kwargs={
-                'slug': post.slug
-            } ) )
+            return redirect( reverse( 'post', kwargs={'slug': post.slug} ) )
 
     def get_context_data(self, **kwargs):
         posts = Post.objects.all()
@@ -178,7 +142,6 @@ class PostDetailView( HitCountDetailView ):
             'form': self.form,
             'post_comments': post_comments,
             'post_comments_count': post_comments_count,
-
             'profile': profile,
 
             'posts': posts,
@@ -187,3 +150,24 @@ class PostDetailView( HitCountDetailView ):
             'popular_posts': popular_posts,
         } )
         return context
+
+
+class CommentReplyView( LoginRequiredMixin, View ):
+    slug_field = 'slug'
+
+    def post(self, request, post_pk, pk, *args, **kwargs):
+        post = get_object_or_404(Post,pk=post_pk)
+        parent_comment = get_object_or_404(Comment,pk=pk)
+        form = CommentForm( request.POST )
+
+        if form.is_valid():
+            new_comment = form.save( commit=False )
+            new_comment.user = request.user
+            new_comment.post = post
+            new_comment.parent = parent_comment
+            new_comment.save()
+
+            return redirect( reverse( 'post', kwargs={'slug': post.slug} ) )
+
+        return redirect( 'post', pk=post_pk )
+        # return redirect( 'post', kwargs={'slug': post.slug}, pk=post_pk )

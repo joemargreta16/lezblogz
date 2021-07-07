@@ -1,4 +1,5 @@
 # Create your views here.
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from blog.views import Post, Category
 from .models import Profile
@@ -19,7 +20,7 @@ def my_profile(request):
     comment_count = Comment.objects.filter( user=request.user ).count()
 
     page = request.GET.get( 'page' )
-    paginator = Paginator( posts,8 )
+    paginator = Paginator( posts, 8 )
     try:
         posts = paginator.page( page )
     except PageNotAnInteger:
@@ -32,7 +33,6 @@ def my_profile(request):
         'posts': posts,
         'posts_count': posts_count,
         'comment_count': comment_count,
-
         'page': page,
     }
     return render( request, 'pages/my_profile.html', context )
@@ -50,7 +50,6 @@ def update_profile(request):
             u_form.save()
             p_form.save()
             confirm = True
-            return redirect( 'pages:my_profile', {'confirm': confirm,} )
 
     context = {
         'profile': profile,

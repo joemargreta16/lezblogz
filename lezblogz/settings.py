@@ -27,7 +27,10 @@ SECRET_KEY = '6#x8nss7()#fmft6*hxb*ln3#_l(cfu5lx*(w2ubc7uhpk&4(4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lezblogz.herokuapp.com']
+# ALLOWED_HOSTS = ['lezblogz.herokuapp.com']
+
+# comment this when deploy
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -148,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'
 
 USE_I18N = True
 
@@ -160,8 +163,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join( BASE_DIR, 'static' )
-STATICFILES_DIRS = (STATIC_ROOT,)
+# uncomment this if there is error
+# STATIC_ROOT = os.path.join( BASE_DIR, 'static' )
+# STATICFILES_DIRS = (STATIC_ROOT,)
+
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join( BASE_DIR, 'static' )
+    ]
+else:
+    STATIC_ROOT = os.path.join( BASE_DIR, 'static' )
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join( BASE_DIR, 'media' )
@@ -194,16 +205,16 @@ ACCOUNT_EMAIL_UNIQUE = True
 
 # comment lang muna kapag i localhost
 # smtp
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIl_PORT = 587
 EMAIL_HOST_USER = 'joemar.greta16@gmail.com'
 EMAIL_HOST_PASSWORD = 'mhvkaoomuyaoltcp'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'lezblogz <joemar.greta16@gmail.com>'
-
-#   for deployment
+DEFAULT_FROM_EMAIL = 'The Blog <joemar.greta16@gmail.com>'
+#
+# #   for deployment
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import dj_database_url
 import django_heroku

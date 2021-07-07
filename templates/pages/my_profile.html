@@ -4,21 +4,12 @@
 {% load hitcount_tags %}
 
 {% block custom_css %}
-<link rel="stylesheet" type="text/css" href="{% static "custom_style.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static 'custom_style.css' %}">
 {% endblock custom_css %}
 
 {% block title %} | My Profile{% endblock title %}
 
 {% block content %}
-
-{% if confirm %}
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <strong>You profile has been updated.</strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{% endif %}
 
 <div class="row py-5 px-4">
     <div class="col-md-8 mx-auto">
@@ -31,7 +22,7 @@
                         {% if user.is_authenticated %}
                         <a href="{% url 'pages:update_profile' %}" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
                     </div>
-                    {% endif %}
+                        {% endif %}
                     <div class="media-body mb-5 text-white profile-head">
                         <h4 class="mt-0 mb-0">{{ profile.first_name }}&nbsp;{{ profile.last_name }}</h4>
                         <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i>{{ profile.user }}</p>
